@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, SafeAreaView } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import LoginScreen from "./screens/LoginScreen";
@@ -13,12 +13,13 @@ import ProyectoScreen from "./screens/ProyectoScreen";
 import EvaluacionScreen from "./screens/EvaluacionScreen";
 import DocumentoScreen from "./screens/DocumentoScreen";
 
+
 const Drawer = createDrawerNavigator();
 const Tab = createMaterialTopTabNavigator();
 
 const App = () => {
   const [user, setUser] = useState(null);
-  const [showRegister, setShowRegister] = useState(false);
+  const [showRegister, setShowRegister] = useState(false); 
 
   const handleLogin = (loggedUser, goToRegister = false) => {
     if (loggedUser) {
@@ -27,6 +28,10 @@ const App = () => {
     }
     if (goToRegister) setShowRegister(true);
     else setShowRegister(false);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
   };
 
   const handleRegister = () => setShowRegister(false);
@@ -41,14 +46,20 @@ const App = () => {
         drawerPosition: 'left',
         drawerStyle: { backgroundColor: '#222f3e', width: 250 },
         drawerLabelStyle: { color: '#ffffff', fontSize: 16, fontWeight: 'bold' },
-        headerStyle: { backgroundColor: '#222f3e' },
+        headerStyle: { backgroundColor: '#222f3e', },
         headerTintColor: '#ffffff',
         headerTitleStyle: { fontWeight: 'bold' },
       }}
     >
       <Drawer.Screen
         name="Home"
-        component={HomeScreen}
+        options={{ title: "Inicio" }}
+      >
+      {props => <HomeScreen {...props} onLogout={handleLogout} />}
+      </Drawer.Screen>
+      <Drawer.Screen
+        name="Home"
+        component={HomeScreen}       
         initialParams={{ user }}
         options={{ title: "Inicio" }}
       />
@@ -93,7 +104,9 @@ const App = () => {
         component={HomeScreen}
         initialParams={{ user }}
         options={{ title: "Inicio" }}
-      />,
+      >
+      {props => <HomeScreen {...props} onLogout={handleLogout} />}
+      </Tab.Screen>,
       <Tab.Screen
         key="Proyectos"
         name="Proyectos"
@@ -108,7 +121,9 @@ const App = () => {
         component={HomeScreen}
         initialParams={{ user }}
         options={{ title: "Inicio" }}
-      />,
+      >
+      {props => <HomeScreen {...props} onLogout={handleLogout} />}
+      </Tab.Screen>,
       <Tab.Screen
         key="Proyectos"
         name="Proyectos"
@@ -122,7 +137,13 @@ const App = () => {
         options={{ title: "Evaluaciones" }}
       />,
     ],
-    admin: [<Drawer.Screen key="AdminDrawer" name="AdminDrawer" component={AdminDrawer} options={{ title: "Menú" }} />],
+    admin: [<Drawer.Screen 
+                key="AdminDrawer" 
+                name="AdminDrawer" 
+                component={AdminDrawer} 
+                options={{ title: "Menú" }} 
+              />
+    ],
   };
 
   const screens = roleScreens[user.tipo_usuario] || [];
@@ -141,12 +162,10 @@ const App = () => {
     <NavigationContainer>
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Titulacion-App</Text>
-          </View>
+          
           <View style={styles.tabContainer}>
             {user.tipo_usuario === 'admin' ? (
-              <AdminDrawer />
+                <AdminDrawer/>
             ) : (
               <Tab.Navigator
                 screenOptions={{
@@ -170,10 +189,10 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#1e90ff' },
   container: { flex: 1 },
-  header: { backgroundColor: '#222f3e', padding: 15, alignItems: 'flex-start' },
+  header: { backgroundColor: '#222f3e', padding: 10, alignItems: 'center'},
   headerTitle: { color: '#ffffff', fontSize: 20, fontWeight: 'bold' },
   tabContainer: { flex: 1 },
-  errorText: { color: '#ffffff', fontSize: 18, textAlign: 'center', marginTop: 20 },
+  errorText: { color: '#ffffff', fontSize: 18, textAlign: 'center', marginTop: 20 }, 
 });
 
 export default App;
