@@ -75,8 +75,8 @@ WSGI_APPLICATION = 'titulacionCRUD.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'titulacion',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'Titulacion',
         'USER': 'postgres',
         'PASSWORD': 'DrXeno79TESLA',
         'HOST': 'localhost',
